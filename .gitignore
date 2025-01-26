@@ -1,2 +1,7 @@
+.idea/misc.xml
+.idea/pythonProject.iml
+
 .ipynb_checkpoints/
 Scraper/__pycache__/
+Scraper/data
+

@@ -1,21 +1,31 @@
-import urllib.request
-from pprint import pprint
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
 
-from html_table_parser import HTMLTableParser
+class CryptoTableParser:
 
+    def get_crypto_data(self):
+        url = 'https://crypto.com/price'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        table = soup.find('table', {'class': 'chakra-table css-1qpk7f7'}) #chakra-table css-1qpk7f7
+        data = []
+        for row in table.find_all('tr')[1:]:  # Skip the header row
+            columns = row.find_all('td')
+            name_tag = columns[2].find('p', class_='chakra-text css-rkws3')
+            name = name_tag.get_text(strip=True) if name_tag else 'N/A'
+            price = columns[3].find('p', class_='chakra-text css-13hqrwd').get_text(strip=True)
+            change_24h = columns[4].get_text(strip=True)
+            data.append({'Name': name, 'Price': price, '24H Change': change_24h})
+        # print(pd.DataFrame(data))
+        return data
+        # for entry in data:
+        #     print(f"Name: {entry['Name']}, Price: {entry['Price']}, 24H Change: {entry['24H Change']}")
 
-def url_get_contents(url):
-    # Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    req = urllib.request.Request(url=url, headers={'User-Agent': 'Mozilla/5.0'})
-    f = urllib.request.urlopen(req)
+    # store in pandas df
+    # print(pd.DataFrame(data))
+    # return data
 
-    return f.read()
+    # store in pyspark df
 
-
-xhtml = url_get_contents('https://crypto.com/price').decode('utf-8')
-
-p = HTMLTableParser()
-
-p.feed(xhtml)
-# print(len(p.tables))
-pprint(p.tables[0])
+    # export in excel using pyspark.write
