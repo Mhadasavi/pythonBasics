@@ -1,7 +1,11 @@
+.gitignore
 .idea/misc.xml
 .idea/pythonProject.iml
+
 
 .ipynb_checkpoints/
 Scraper/__pycache__/
 Scraper/data
-
+*/__pycache__
+*/airbnb_listing.csv
+*/Res/airbnb_listing.csv
